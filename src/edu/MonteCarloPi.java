@@ -1,11 +1,12 @@
 package edu;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class MonteCarloPi {
-    private final long iterationsCount = (long) 1e7;
+    private final long iterationsCount = (long) 1e8;
     private long parallelPassed;
-    public static synchronized boolean isInCircle(double x, double y) {
+    public static boolean isInCircle(double x, double y) {
         return (x*x + y*y) < 1.0;
     }
 
@@ -26,12 +27,16 @@ public class MonteCarloPi {
         int n = Runtime.getRuntime().availableProcessors();
         long iterForProcCount = iterationsCount / n;
         parallelPassed = 0;
-        for(int i = 0; i < n; i++) {
-            CustomThread customThread = new CustomThread(iterForProcCount, this);
+        ArrayList<CustomThread> customThreads = new ArrayList<>();
+        for(int i = 0; i < n; i++)
+            customThreads.add(new CustomThread(iterForProcCount, this));
+
+        for (CustomThread customThread : customThreads) {
             customThread.start();
+        }
+        for (CustomThread customThread : customThreads) {
             customThread.join();
         }
-
         return ((double) parallelPassed / iterationsCount) * 4.0;
     }
 

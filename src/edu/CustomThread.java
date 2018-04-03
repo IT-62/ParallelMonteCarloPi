@@ -20,5 +20,7 @@ public class CustomThread extends Thread {
             if(MonteCarloPi.isInCircle(x, y)) passed++;
         }
         monteCarloPi.incPassed(passed);
+        System.out.println(currentThread().getName());
+
     }
 }

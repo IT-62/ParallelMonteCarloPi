@@ -1,46 +1,35 @@
 package edu;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 public class MonteCarloPi {
-    private final long iterationsCount = (long) 1e8;
-    private long parallelPassed;
-    public static boolean isInCircle(double x, double y) {
-        return (x*x + y*y) < 1.0;
-    }
+    private final long iterationsTotal = (long) 1e9;
 
     public double getPiSequential() {
-        double x = 0.0, y = 0.0;
+        double x, y;
         long passed = 0;
         Random rnd = new Random();
-        for(int i = 0; i < iterationsCount; ++i) {
+        for(int i = 0; i < iterationsTotal; ++i) {
             x = rnd.nextDouble();
             y = rnd.nextDouble();
-            if(isInCircle(x, y))
+            if((x * x + y * y) < 1.0)
                 passed++;
         }
-        return  ((double) passed / iterationsCount) * 4.0;
+        return ((double) passed / iterationsTotal) * 4.0;
     }
 
     public double getPiParallel() throws InterruptedException {
         int n = Runtime.getRuntime().availableProcessors();
-        long iterForProcCount = iterationsCount / n;
-        parallelPassed = 0;
-        ArrayList<CustomThread> customThreads = new ArrayList<>();
-        for(int i = 0; i < n; i++)
-            customThreads.add(new CustomThread(iterForProcCount, this));
-
-        for (CustomThread customThread : customThreads) {
-            customThread.start();
+        long passedTotal = 0, iterationsPerProcess = iterationsTotal / n;
+        CustomThread[] customThreads = new CustomThread[n];
+        for(int i = 0; i < n; i++) {
+            customThreads[i] = new CustomThread(iterationsPerProcess);
+            customThreads[i].start();
         }
         for (CustomThread customThread : customThreads) {
             customThread.join();
+            passedTotal += customThread.passed;
         }
-        return ((double) parallelPassed / iterationsCount) * 4.0;
-    }
-
-    public synchronized void incPassed(long curPassed) {
-        parallelPassed+=curPassed;
+        return ((double) passedTotal / iterationsTotal) * 4.0;
     }
 }

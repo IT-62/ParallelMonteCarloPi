@@ -3,24 +3,22 @@ package edu;
 import java.util.Random;
 
 public class CustomThread extends Thread {
-    private long iterForProcCount;
-    MonteCarloPi monteCarloPi;
-    public CustomThread(long iterForProcCount, MonteCarloPi monteCarloPi) {
-        this.iterForProcCount = iterForProcCount;
-        this.monteCarloPi = monteCarloPi;
+    public long passed;
+    private long iterationsPerProcess;
+
+    public CustomThread(long iterationsPerProcess) {
+        this.iterationsPerProcess = iterationsPerProcess;
     }
 
     public void run() {
         Random rnd = new Random();
         double x, y;
-        long passed = 0;
-        for(int i = 0; i < iterForProcCount; i++) {
+        passed = 0;
+        for(int i = 0; i < iterationsPerProcess; i++) {
             x = rnd.nextDouble();
             y = rnd.nextDouble();
-            if(MonteCarloPi.isInCircle(x, y)) passed++;
+            if((x * x + y * y) < 1.0)
+                passed++;
         }
-        monteCarloPi.incPassed(passed);
-        System.out.println(currentThread().getName());
-
     }
 }

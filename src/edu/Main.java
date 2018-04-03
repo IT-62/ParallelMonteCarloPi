@@ -1,14 +1,18 @@
 package edu;
 
-import java.io.IOException;
-
 public class Main {
     public static void main(String[] args) throws InterruptedException{
-        long startTime = System.currentTimeMillis();
-        System.out.println(new MonteCarloPi().getPiSequential());
-        System.out.println(System.currentTimeMillis() - startTime + "мс прошло (последовательно)");
+        long startTime, finishTime;
+        double seqPi, parPi;
         startTime = System.currentTimeMillis();
-        System.out.println(new MonteCarloPi().getPiParallel());
-        System.out.println(System.currentTimeMillis() - startTime + "мс прошло (параллельно)");
+        seqPi = new MonteCarloPi().getPiSequential();
+        finishTime = System.currentTimeMillis() - startTime;
+        System.out.println(finishTime + "ms (sequential)");
+        startTime = System.currentTimeMillis();
+        parPi = new MonteCarloPi().getPiParallel();
+        finishTime = System.currentTimeMillis() - startTime;
+        System.out.println(finishTime + "ms (parallel)");
+        System.out.println("Sequential Pi: " + seqPi);
+        System.out.println("Parallel Pi: " + parPi);
     }
 }

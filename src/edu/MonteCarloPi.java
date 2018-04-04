@@ -3,9 +3,9 @@ package edu;
 import java.util.Random;
 
 public class MonteCarloPi {
-    private final long iterationsTotal = (long) 1e9;
+    private final static long iterationsTotal = (long) 1e7;
 
-    public double getPiSequential() {
+    public static double getPiSequential() {
         double x, y;
         long passed = 0;
         Random rnd = new Random();
@@ -18,8 +18,8 @@ public class MonteCarloPi {
         return ((double) passed / iterationsTotal) * 4.0;
     }
 
-    public double getPiParallel() throws InterruptedException {
-        int n = Runtime.getRuntime().availableProcessors();
+    public static double getPiParallel(int threadsCount) throws InterruptedException {
+        int n = threadsCount;
         long passedTotal = 0, iterationsPerProcess = iterationsTotal / n;
         CustomThread[] customThreads = new CustomThread[n];
         for(int i = 0; i < n; i++) {

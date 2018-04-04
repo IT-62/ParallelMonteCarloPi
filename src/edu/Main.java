@@ -9,7 +9,7 @@ public class Main {
         finishTime = System.currentTimeMillis() - startTime;
         System.out.println(finishTime + "ms (sequential)");
         startTime = System.currentTimeMillis();
-        parPi = new MonteCarloPi().getPiParallel();
+        parPi = new MonteCarloPi().getPiParallel(4);
         finishTime = System.currentTimeMillis() - startTime;
         System.out.println(finishTime + "ms (parallel)");
         System.out.println("Sequential Pi: " + seqPi);
